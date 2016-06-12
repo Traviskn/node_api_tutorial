@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+
+    <title>Sample App</title>
+  </head>
+
+  <body>
+    <h1>Sample Message App</h1>
+
+    <button id="getMessagesButton">Get Messages</button>
+    <button id="clearMessagesButton">Clear Messages</button>
+
+    <ul id="messageList"></ul>
+
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <script type="text/javascript">
+      'use strict'
+
+      jQuery(document).ready(function() {
+        // Get messages when the button is clicked
+        var getMessagesButton = $('#getMessagesButton');
+        getMessagesButton.click(function() {
+          getMessages();
+        });
+
+        // Clear messages when the button is clicked
+        var clearMessagesButton = $('#clearMessagesButton');
+        clearMessagesButton.click(function() {
+          clearMessages();
+        });
+
+        // Hide the clear messages button at first
+        clearMessagesButton.hide();
+
+        // Get the list that will hold messages
+        var messageList = $('#messageList');
+
+        // Get the message data from our API
+        function getMessages() {
+          $.get('/api/messages/', function(response) {
+            renderMessages(response.data);
+          });
+        }
+
+        // Display the message data in a nice list format
+        function renderMessages(data) {
+          var messages = data.map(function(m) {
+            return $('<li id="' + m.id + '">' + m.message + '</li>');
+          });
+
+          messageList.html(messages);
+
+          getMessagesButton.hide();
+          clearMessagesButton.show();
+        }
+
+        // Remove all the messages from the list
+        function clearMessages() {
+          messageList.empty();
+
+          clearMessagesButton.hide();
+          getMessagesButton.show();
+        }
+      });
+    </script>
+  </body>
+</html>
